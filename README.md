@@ -1,9 +1,26 @@
 # Final_Project_711/811
-### By: 
-### Julia Murray and Kayla Royce
----
-## Background: 
-### The given data, gathered by a graduate student, is used to peform a bioinformatic pathway analysis through qiime2. The 16s data was sequenced by Illumina HiSeq 2500 with 250 bp, paired-end reads. 
-### The goal of data collection is to analyze and identify the differences microbiome composition of duckweeds through bioinformatic techniques. 
----
-## Methods
+# Duckweed Microbiome QIIME2 Project
+
+This project analyzes 16S rRNA sequencing data from microbiome samples associated with duckweed. The aim is to compare microbial communities between duckweed surfaces and surrounding pond water using QIIME2.
+
+## Group Members
+- Julia Murray
+- Kayla Royce
+
+## Project Overview
+
+We are working with:
+- **40 FASTQ files** (20 paired-end samples)
+- **Illumina HiSeq 2500**
+- **Paired-end, 250 bp reads**
+
+### Sample Design
+- **2 Sampling Locations**
+- **2 Treatments:**
+  - Duckweed surface microbiome
+  - Pond water microbiome
+- **5 Replicates per treatment/location**
+
+### Files Provided
+- `manifest_file.csv`: Tells QIIME2 where each FASTQ file is.
+- `metadata.tsv`: Describes treatment, sample ID, location, etc.
