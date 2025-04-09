@@ -1,7 +1,7 @@
 # Final_Project_711/811
 # Duckweed Microbiome QIIME2 Project
 
-This project analyzes 16S rRNA sequencing data from microbiome samples associated with duckweed. The aim is to compare microbial communities between duckweed surfaces and surrounding pond water using QIIME2.
+The goal of this project is to analyze 16S rRNA sequencing data from microbiome samples associated with duckweed. The aim is to compare and identify the differences in microbial communities between duckweed surfaces and surrounding pond water using QIIME2.
 
 ## Group Members
 - Julia Murray
@@ -9,12 +9,13 @@ This project analyzes 16S rRNA sequencing data from microbiome samples associate
 
 ## Project Overview
 
-We are working with:
+Data for bioinformatic pathway analysis through qiime2:
 - **40 FASTQ files** (20 paired-end samples)
+- **16s rRNA data**
 - **Illumina HiSeq 2500**
 - **Paired-end, 250 bp reads**
 
-### Sample Design
+### Methods
 - **2 Sampling Locations**
 - **2 Treatments:**
   - Duckweed surface microbiome
@@ -24,3 +25,5 @@ We are working with:
 ### Files Provided
 - `manifest_file.csv`: Tells QIIME2 where each FASTQ file is.
 - `metadata.tsv`: Describes treatment, sample ID, location, etc.
+
+### Results
