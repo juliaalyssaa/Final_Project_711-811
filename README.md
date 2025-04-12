@@ -23,7 +23,7 @@ Data for bioinformatic pathway analysis through qiime2:
 - **5 Replicates per treatment/location**
 
 ### Files Provided
-- `manifest_file.csv`: Tells QIIME2 where each FASTQ file is.
-- `metadata.tsv`: Describes treatment, sample ID, location, etc.
+- `manifest.tsv`
+- `metadata.tsv`
 
 ### Results
