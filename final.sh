@@ -2,10 +2,11 @@
 
 maindir="/home/users/kgr1020/GEN711FinalProject"
 datadir="$maindir/qiime2.microbiomedata"
-dadadir="$datadir/dada2results"
+usdir="$datadir/upstream.analysis"
 rddir="$maindir/Final_Project_711-811/rawdata"
-qzvdir="$dadadir/qzvresults"
-fdir="$dadadir/filteredresults"
+qzvdir="$usdir/qzvresults"
+fdir="$usdir/filteredresults"
+tdir="$usdir/taxonomyresults"
 
 #files used: /tmp/qiimme2_dataset/manifest.tsv + metadata.tsv
 
@@ -14,8 +15,8 @@ date
 source activate qiime2-amplicon-2024.5
 
 #mkdir -p $datadir
-cd $datadir
-#mkdir -p $dadadir
+cd $usdir
+#mkdir -p $usdir
 
 #echo "importing sequences into qiime..."
 #qiime tools import \
@@ -27,7 +28,7 @@ cd $datadir
 #echo "converting to qzv file..."
 #qiime demux summarize \
 # --i-data demux.qza \
-# --o-visualization $datadir/demux.qzv
+# --o-visualization $usdir/demux.qzv
 
 #forward read quality drops at sequence base 226 and reverse read quality drops at sequence base 200
 #echo "filtering reads..."
@@ -36,11 +37,10 @@ cd $datadir
 #  --p-trunc-len-f 220 \
 #  --p-trunc-len-r 200 \
 #  --p-n-threads 8 \
-#  --o-representative-sequences $dadadir/asv-seqs.qza \
-#  --o-table $dadadir/asv-table.qza \
-#  --o-denoising-stats $dadadir/stats.qza
+#  --o-representative-sequences $usdir/asv-seqs.qza \
+#  --o-table $usdir/asv-table.qza \
+#  --o-denoising-stats $usdir/stats.qza
 
-cd $dadadir
 #mkdir -p $qzvdir
 
 #echo "visualizing metadata stats..."
@@ -53,8 +53,8 @@ cd $dadadir
 #  --i-table asv-table.qza \
 #  --m-metadata-file $rddir/metadata.tsv \
 #  --o-summary $qzvdir/asv-table.qzv \
-#  --o-sample-frequencies $dadadir/sample-frequencies.qza \
-#  --o-feature-frequencies $dadadir/asv-frequencies.qza
+#  --o-sample-frequencies $usdir/sample-frequencies.qza \
+#  --o-feature-frequencies $usdir/asv-frequencies.qza
 
 #echo "performing tabulate-seqs action..."
 #qiime feature-table tabulate-seqs \
@@ -62,19 +62,55 @@ cd $dadadir
 #  --m-metadata-file asv-frequencies.qza \
 #  --o-visualization $qzvdir/asv-seqs.qzv
 
-mkdir -p $fdir
+#mkdir -p $fdir
 
 #could make into p-min3 or maybe 4
-echo "filtering feature table..."
-qiime feature-table filter-features \
-  --i-table asv-table.qza \
-  --p-min-samples 2 \
-  --o-filtered-table $fdir/asv-table-ms2.qza
+#echo "filtering feature table..."
+#qiime feature-table filter-features \
+#  --i-table asv-table.qza \
+#  --p-min-samples 2 \
+#  --o-filtered-table $fdir/asv-table-ms2.qza
 
-echo "filtering sequences..."
-qiime feature-table filter-seqs \
-  --i-data asv-seqs.qza \
-  --i-table $fdir/asv-table-ms2.qza \
-  --o-filtered-data $fdir/asv-seqs-ms2.qza
+#echo "filtering sequences..."
+#qiime feature-table filter-seqs \
+#  --i-data asv-seqs.qza \
+#  --i-table $fdir/asv-table-ms2.qza \
+#  --o-filtered-data $fdir/asv-seqs-ms2.qza
+
+fqzvdir="$fdir/qzvresults.filtered"
+#mkdir -p $fqzvdir
+
+#echo "summarizing feature tables..."
+#qiime feature-table summarize-plus \
+#  --i-table $fdir/asv-table-ms2.qza \
+#  --m-metadata-file $rddir/metadata.tsv \
+#  --o-summary $fqzvdir/asv-table-ms2.qzv \
+#  --o-sample-frequencies $fdir/sample-frequencies-ms2.qza \
+#  --o-feature-frequencies $fdir/asv-frequencies-ms2.qza
+
+#wget -O 'suboptimal-16S-rRNA-classifier.qza' \
+#  'https://gut-to-soil-tutorial.readthedocs.io/en/latest/data/gut-to-soil/suboptimal-16S-rRNA-classifier.qza'
+
+# mkdir -p $tdir
+
+#echo "assigning taxonomy to sequences..."
+#qiime feature-classifier classify-sklearn \
+#  --i-classifier suboptimal-16S-rRNA-classifier.qza \
+#  --i-reads $fdir/asv-seqs-ms2.qza \
+#  --o-classification $tdir/taxonomy.qza
+
+echo "constructing result collection"
+rc_name=taxonomy-collection/
+ext=.qza
+keys= ( Greengenes-13-8 )
+names= ( taxonomy.qza )
+construct_result_collection
+
+echo "visualizing ASV sequences with taxonomic information"
+qiime feature-table tabulate-seqs \
+   --i-data $fdir/asv-seqs-ms2.qza
+   --i-taxonomy taxonomy-collection/ \
+   --m-metadata-file $fdir/asv-frequencies-ms2.qza \
+   --o-visualization $tdir/asv-seqs-ms2.qzv
 
 date
