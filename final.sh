@@ -99,18 +99,11 @@ fqzvdir="$fdir/qzvresults.filtered"
 #  --i-reads $fdir/asv-seqs-ms2.qza \
 #  --o-classification $tdir/taxonomy.qza
 
-echo "constructing result collection"
-rc_name=taxonomy-collection/
-ext=.qza
-keys= ( Greengenes-13-8 )
-names= ( taxonomy.qza )
-construct_result_collection
-
-echo "visualizing ASV sequences with taxonomic information"
-qiime feature-table tabulate-seqs \
-   --i-data $fdir/asv-seqs-ms2.qza
-   --i-taxonomy taxonomy-collection/ \
-   --m-metadata-file $fdir/asv-frequencies-ms2.qza \
-   --o-visualization $tdir/asv-seqs-ms2.qzv
+#echo "visualizing ASV sequences with taxonomic information..."
+#qiime feature-table tabulate-seqs \
+#   --i-data $fdir/asv-seqs-ms2.qza \
+#   --i-taxonomy $tdir/taxonomy.qza/ \
+#   --m-metadata-file $fdir/asv-frequencies-ms2.qza \
+#   --o-visualization $tdir/asv-seqs-ms2.qzv
 
 date
