@@ -9,45 +9,45 @@ date
 
 source activate qiime2-amplicon-2024.5
 
-mkdir -p $datadir
+#mkdir -p $datadir
 cd $datadir
 
-echo "importing sequences into qiime"
-qiime tools import \
- --type 'SampleData[PairedEndSequencesWithQuality]' \
- --input-path $rddir \
- --output-path demux.qza \
- --input-format PairedEndFastqManifestPhred33V2
+#echo "importing sequences into qiime..."
+#qiime tools import \
+# --type 'SampleData[PairedEndSequencesWithQuality]' \
+# --input-path $rddir \
+# --output-path demux.qza \
+# --input-format PairedEndFastqManifestPhred33V2
 
-echo "converting to qzv file"
-qiime demux summarize \
- --i-data demux.qza \
- --o-visualization $datadir/demux.qzv
+#echo "converting to qzv file..."
+#qiime demux summarize \
+# --i-data demux.qza \
+# --o-visualization $datadir/demux.qzv
 
-echo "filtering reads"
+#forward read quality drops at sequence base 226 and reverse read quality drops at sequence base 200
+echo "filtering reads..."
 qiime dada2 denoise-paired \
   --i-demultiplexed-seqs demux.qza \
-  --p-trim-left-f 0 \
-  --p-trunc-len-f 250 \
-  --p-trim-left-r 0 \
-  --p-trunc-len-r 250 \
+  --p-trunc-len-f 220 \
+  --p-trunc-len-r 200 \
+  --p-n-threads 8 \
   --o-representative-sequences asv-seqs.qza \
   --o-table asv-table.qza \
   --o-denoising-stats stats.qza
 
-echo "performing feature-table summarize action"
-qiime feature-table summarize-plus \
-  --i-table asv-table.qza \
-  --m-metadata-file sample-metadata.tsv \
-  --o-summary asv-table.qzv \
-  --o-sample-frequencies sample-frequencies.qza \
-  --o-feature-frequencies asv-frequencies.qza
+#echo "performing feature-table summarize action"
+#qiime feature-table summarize-plus \
+#  --i-table asv-table.qza \
+#  --m-metadata-file sample-metadata.tsv \
+#  --o-summary asv-table.qzv \
+#  --o-sample-frequencies sample-frequencies.qza \
+#  --o-feature-frequencies asv-frequencies.qza
 
-echo "performing tabulate-seqs action"
-qiime feature-table tabulate-seqs \
-  --i-data asv-seqs.qza \
-  --m-metadata-file asv-frequencies.qza \
-  --o-visualization asv-seqs.qzv
+#echo "performing tabulate-seqs action"
+#qiime feature-table tabulate-seqs \
+#  --i-data asv-seqs.qza \
+#  --m-metadata-file asv-frequencies.qza \
+#  --o-visualization asv-seqs.qzv
 
 #qiime feature-table filter-features \
 #  --i-table asv-table.qza \
@@ -58,3 +58,5 @@ qiime feature-table tabulate-seqs \
 #  --i-data asv-seqs.qza \
 #  --i-table asv-table-ms2.qza \
 #  --o-filtered-data asv-seqs-ms2.qza
+
+date
