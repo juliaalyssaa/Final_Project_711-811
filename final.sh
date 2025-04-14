@@ -1,12 +1,7 @@
 #! /usr/bin/bash
 
 maindir="/home/users/kgr1020/GEN711FinalProject"
-datadir="$maindir/qiime2.microbiomedata"
-usdir="$datadir/upstream.analysis"
 rddir="$maindir/Final_Project_711-811/rawdata"
-qzvdir="$usdir/qzvresults"
-fdir="$usdir/filteredresults"
-tdir="$usdir/taxonomyresults"
 
 #files used: /tmp/qiimme2_dataset/manifest.tsv + metadata.tsv
 
@@ -14,9 +9,12 @@ date
 
 source activate qiime2-amplicon-2024.5
 
+datadir="$maindir/qiime2.microbiomedata"
 #mkdir -p $datadir
-cd $usdir
+cd $datadir
+
 #mkdir -p $usdir
+usdir="$datadir/upstream.analysis"
 
 #echo "importing sequences into qiime..."
 #qiime tools import \
@@ -28,7 +26,7 @@ cd $usdir
 #echo "converting to qzv file..."
 #qiime demux summarize \
 # --i-data demux.qza \
-# --o-visualization $usdir/demux.qzv
+# --o-visualization demux.qzv
 
 #forward read quality drops at sequence base 226 and reverse read quality drops at sequence base 200
 #echo "filtering reads..."
@@ -41,6 +39,9 @@ cd $usdir
 #  --o-table $usdir/asv-table.qza \
 #  --o-denoising-stats $usdir/stats.qza
 
+cd $usdir
+
+qzvdir="$usdir/qzvresults"
 #mkdir -p $qzvdir
 
 #echo "visualizing metadata stats..."
@@ -62,6 +63,7 @@ cd $usdir
 #  --m-metadata-file asv-frequencies.qza \
 #  --o-visualization $qzvdir/asv-seqs.qzv
 
+fdir="$usdir/filteredresults"
 #mkdir -p $fdir
 
 #could make into p-min3 or maybe 4
@@ -91,6 +93,7 @@ fqzvdir="$fdir/qzvresults.filtered"
 #wget -O 'suboptimal-16S-rRNA-classifier.qza' \
 #  'https://gut-to-soil-tutorial.readthedocs.io/en/latest/data/gut-to-soil/suboptimal-16S-rRNA-classifier.qza'
 
+tdir="$usdir/taxonomyresults"
 # mkdir -p $tdir
 
 #echo "assigning taxonomy to sequences..."
