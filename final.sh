@@ -10,52 +10,60 @@ date
 source activate qiime2-amplicon-2024.5
 
 datadir="$maindir/qiime2.microbiomedata"
-#mkdir -p $datadir
+mkdir -p $datadir
 cd $datadir
 
-#mkdir -p $usdir
 usdir="$datadir/upstream.analysis"
+mkdir -p $usdir
 
-#echo "importing sequences into qiime..."
-#qiime tools import \
-# --type 'SampleData[PairedEndSequencesWithQuality]' \
-# --input-path $rddir/manifest.tsv \
-# --output-path demux.qza \
-# --input-format PairedEndFastqManifestPhred33V2
+echo "importing sequences into qiime..."
+qiime tools import \
+ --type 'SampleData[PairedEndSequencesWithQuality]' \
+ --input-path $rddir/manifest.tsv \
+ --output-path demux.qza \
+ --input-format PairedEndFastqManifestPhred33V2
 
-#echo "converting to qzv file..."
-#qiime demux summarize \
-# --i-data demux.qza \
-# --o-visualization demux.qzv
+echo "converting to qzv file..."
+qiime demux summarize \
+ --i-data demux.qza \
+ --o-visualization demux.qzv
 
 #forward read quality drops at sequence base 226 and reverse read quality drops at sequence base 200
-#echo "filtering reads..."
-#qiime dada2 denoise-paired \
-#  --i-demultiplexed-seqs demux.qza \
-#  --p-trunc-len-f 220 \
-#  --p-trunc-len-r 200 \
-#  --p-n-threads 8 \
-#  --o-representative-sequences $usdir/asv-seqs.qza \
-#  --o-table $usdir/asv-table.qza \
-#  --o-denoising-stats $usdir/stats.qza
+echo "filtering reads..."
+qiime dada2 denoise-paired \
+  --i-demultiplexed-seqs demux.qza \
+  --p-trunc-len-f 220 \
+  --p-trunc-len-r 200 \
+  --p-n-threads 8 \
+  --o-representative-sequences $usdir/asv-seqs.qza \
+  --o-table $usdir/asv-table.qza \
+  --o-denoising-stats $usdir/stats.qza
 
 cd $usdir
 
 qzvdir="$usdir/qzvresults"
-#mkdir -p $qzvdir
+mkdir -p $qzvdir
 
-#echo "visualizing metadata stats..."
-#qiime metadata tabulate \
-#   --m-input-file stats.qza \
-#   --o-visualization $qzvdir/stats.qzv \
+echo "visualizing metadata stats..."
+qiime metadata tabulate \
+   --m-input-file stats.qza \
+   --o-visualization $qzvdir/stats.qzv \
 
-#echo "performing feature-table summarize action..."
-#qiime feature-table summarize-plus \
-#  --i-table asv-table.qza \
-#  --m-metadata-file $rddir/metadata.tsv \
-#  --o-summary $qzvdir/asv-table.qzv \
-#  --o-sample-frequencies $usdir/sample-frequencies.qza \
-#  --o-feature-frequencies $usdir/asv-frequencies.qza
+#CHECK: dropping poor quality data viewed from stats.qzv
+echo "removing sample ODR-3-3"
+qiime feature-table filter-samples \
+   --i-table asv-table.qza \
+   --p-min-frequency 1000 \
+   --o-filtered-table asv-filtered-table.qza
+
+
+echo "performing feature-table summarize action..."
+qiime feature-table summarize-plus \
+  --i-table asv-filtered-table.qza \
+  --m-metadata-file $rddir/metadata.tsv \
+  --o-summary $qzvdir/asv-table.qzv \
+  --o-sample-frequencies $usdir/sample-frequencies.qza \
+  --o-feature-frequencies $usdir/asv-frequencies.qza
 
 #echo "performing tabulate-seqs action..."
 #qiime feature-table tabulate-seqs \
@@ -66,10 +74,9 @@ qzvdir="$usdir/qzvresults"
 fdir="$usdir/filteredresults"
 #mkdir -p $fdir
 
-#could make into p-min3 or maybe 4
 #echo "filtering feature table..."
 #qiime feature-table filter-features \
-#  --i-table asv-table.qza \
+#  --i-table asv-filtered-table.qza \
 #  --p-min-samples 2 \
 #  --o-filtered-table $fdir/asv-table-ms2.qza
 
@@ -103,10 +110,33 @@ tdir="$usdir/taxonomyresults"
 #  --o-classification $tdir/taxonomy.qza
 
 #echo "visualizing ASV sequences with taxonomic information..."
-#qiime feature-table tabulate-seqs \
+#qiime metadata tabulate \
+#   --m-input-file $tdir/taxonomy.qza \
+#   --o-visualization $tdir/taxonomy.qzv
+# option 1: qiime feature-table tabulate-seqs \
 #   --i-data $fdir/asv-seqs-ms2.qza \
 #   --i-taxonomy $tdir/taxonomy.qza/ \
 #   --m-metadata-file $fdir/asv-frequencies-ms2.qza \
 #   --o-visualization $tdir/asv-seqs-ms2.qzv
+
+#wget \
+#  -O "sepp-refs-gg-13-8.qza" \
+#  "https://data.qiime2.org/classifiers/sepp-ref-dbs/sepp-refs-gg-13-8.qza"
+
+#echo "creating phylogenetic tree"
+#qiime fragment-insertion sepp \
+#   --i-representative-sequences asv.seqs.qza \
+#   --i-reference-database sepp-refs-gg-13-8.qza \
+#   --o-tree tree.qza \
+#   --o-placements tree_placements.qza \
+#   --p-threads 8
+
+#echo "normalizing via rarefaction"
+#qiime diversity alpha-rarefaction \
+#   --i-table asv-table.qza \
+#   --m-metadata-file $rddir/metadata.tsv \
+#   --o-visualization alpha_rarefaction_curves.qzv
+#   --p-min-depth __
+#  --p-max-depth ___
 
 date
