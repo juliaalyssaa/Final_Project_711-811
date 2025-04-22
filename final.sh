@@ -119,25 +119,68 @@ dsdir="$datadir/downstream.analysis"
 cd $dsdir
 
 rarefaction="$dsdir/alphararefaction.results"
-mkdir -p $rarefaction
+#mkdir -p $rarefaction
 
 #tree_placements for diversity metrics, tree.qza for rarefaction
-echo "creating phylogenetic tree..."
-qiime fragment-insertion sepp \
-   --i-representative-sequences $filtfeat/asv-seqs-ms10.qza \
-   --i-reference-database $tools/sepp-refs-gg-13-8.qza \
-   --o-tree $rarefaction/tree.qza \
-   --o-placements $rarefaction/tree_placements.qza \
-   --p-threads 8
+#echo "completing fragment insertion using SEPP method..."
+#qiime fragment-insertion sepp \
+#   --i-representative-sequences $filtfeat/asv-seqs-ms10.qza \
+#   --i-reference-database $tools/sepp-refs-gg-13-8.qza \
+#   --o-tree $rarefaction/tree.qza \
+#   --o-placements $rarefaction/tree_placements.qza \
+#   --p-threads 8
 
-echo "performing alpha rarefaction plotting"
-qiime diversity alpha-rarefaction \
-   --i-table $filtfeat/asv-table-ms10.qza \
-   --i-phylogeny $rarefaction/tree.qza \
+#could split water and duckweed samples using for loop; water has less features and does not plateau
+#echo "performing alpha rarefaction plotting"
+#qiime diversity alpha-rarefaction \
+#   --i-table $filtfeat/asv-table-ms10.qza \
+#   --i-phylogeny $rarefaction/tree.qza \
+#   --m-metadata-file $rddir/metadata.tsv \
+#   --o-visualization $rarefaction/alpha-rarefaction.qzv \
+#   --p-min-depth 500 \
+#   --p-max-depth 2500
+#selecting rarefaction depth of 1600 for now, could change later
+
+metricsdiv="$dsdir/diversity.metrics"
+
+#echo "starting diversity metrics"
+#qiime diversity core-metrics-phylogenetic \
+#   --i-table $filtfeat/asv-table-ms10.qza \
+#   --i-phylogeny $rarefaction/tree.qza \
+#   --m-metadata-file $rddir/metadata.tsv \
+#   --p-sampling-depth 1600 \
+#   --output-dir $metricsdiv
+
+qzametrics="$metricsdiv/qza.metrics"
+#mkdir -p $qzametrics
+qzvmetrics="$metricsdiv/qzv.metrics"
+#mkdir -p $qzvmetrics
+
+#filedir="$metricsdiv/*"
+#for item in $filedir; do
+#   if [[ $item == *.qza ]]; then
+#      mv $item $qzametrics
+#   elif [[ $item == *.qzv ]]; then
+#      mv $item $qzvmetrics
+#   fi
+#done
+
+alpha="$dsdir/alpha.diversity"
+#mkdir -p $alpha
+
+echo "running alpha diversity visualizations"
+qiime diversity alpha-group-significance \
+   --i-alpha-diversity $qzametrics/faith_pd_vector.qza \
    --m-metadata-file $rddir/metadata.tsv \
-   --o-visualization $rarefaction/alpha-rarefaction.qzv \
-   --p-min-depth 500 \
-   --p-max-depth 2500
+   --o-visualization $alpha/faiths_pd_statistics.qzv
+
+#qiime diversity alpha-group-significance \
+#   --i-alpha-diversity $qzametrics/evenness_vector.qza \
+#   --m-metadata-file $rddir/metadata.tsv \
+#   --o-visualization $alpha/evenness_statistics.qzv
+
+#POTENTIALLY ADD ANOVA?
+
 
 
 #HERE:        wget -O 'suboptimal-16S-rRNA-classifier.qza' \
