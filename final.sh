@@ -118,28 +118,7 @@ dsdir="$datadir/downstream.analysis"
 #mkdir $dsdir
 cd $dsdir
 
-rarefaction="$dsdir/alphararefaction.results"
-#mkdir -p $rarefaction
-
-#tree_placements for diversity metrics, tree.qza for rarefaction
-#echo "completing fragment insertion using SEPP method..."
-#qiime fragment-insertion sepp \
-#   --i-representative-sequences $filtfeat/asv-seqs-ms10.qza \
-#   --i-reference-database $tools/sepp-refs-gg-13-8.qza \
-#   --o-tree $rarefaction/tree.qza \
-#   --o-placements $rarefaction/tree_placements.qza \
-#   --p-threads 8
-
-#could split water and duckweed samples using for loop; water has less features and does not plateau
-#echo "performing alpha rarefaction plotting"
-#qiime diversity alpha-rarefaction \
-#   --i-table $filtfeat/asv-table-ms10.qza \
-#   --i-phylogeny $rarefaction/tree.qza \
-#   --m-metadata-file $rddir/metadata.tsv \
-#   --o-visualization $rarefaction/alpha-rarefaction.qzv \
-#   --p-min-depth 500 \
-#   --p-max-depth 2500
-#selecting rarefaction depth of 1600 for now, could change later
+#ADD kmer step
 
 metricsdiv="$dsdir/diversity.metrics"
 
