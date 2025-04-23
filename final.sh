@@ -87,22 +87,22 @@ ffqzv="$filtfeat/ff.qzv.results"
 #echo "filtering feature table..."
 #qiime feature-table filter-features \
 #  --i-table $filtreads/asv-filtered-table.qza \
-#  --p-min-samples 10 \
-#  --o-filtered-table $filtfeat/asv-table-ms10.qza
+#  --p-min-samples 5 \
+#  --o-filtered-table $filtfeat/asv-table-ms5.qza
 
 #echo "filtering sequences..."
 #qiime feature-table filter-seqs \
 #  --i-data $denoised/asv-seqs.qza \
-#  --i-table $filtfeat/asv-table-ms10.qza \
-#  --o-filtered-data $filtfeat/asv-seqs-ms10.qza
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --o-filtered-data $filtfeat/asv-seqs-ms5.qza
 
 #echo "summarizing feature tables..."
 #qiime feature-table summarize-plus \
-#  --i-table $filtfeat/asv-table-ms10.qza \
+#  --i-table $filtfeat/asv-table-ms5.qza \
 #  --m-metadata-file $rddir/metadata.tsv \
-#  --o-summary $ffqzv/asv-table-ms10.qzv \
-#  --o-sample-frequencies $filtfeat/sample-frequencies-ms10.qza \
-#  --o-feature-frequencies $filtfeat/asv-frequencies-ms10.qza
+#  --o-summary $ffqzv/asv-table-ms5.qzv \
+#  --o-sample-frequencies $filtfeat/sample-frequencies-ms5.qza \
+#  --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
 
 tools="$datadir/tools"
 #mkdir $tools
@@ -118,10 +118,28 @@ dsdir="$datadir/downstream.analysis"
 #mkdir $dsdir
 cd $dsdir
 
-#ADD kmer step
+qiime boots kmer-diversity \
+  --i-table $filtfeat/asv-table-ms5.qza \
+  --i-sequences $filtfeat/asv-seqs-ms5.qza \
+  --m-metadata-file $rddir/metadata.tsv \
+  --p-sampling-depth 1200 \
+  --p-n 10 \
+  --p-replacement \
+  --p-alpha-average-method median \
+  --p-beta-average-method medoid \
+  --output-dir boots-kmer-diversity
 
+qiime diversity alpha-rarefaction \
+  --i-table $filtfeat/asv-table-ms5.qza \
+  --p-max-depth 4500 \
+  --m-metadata-file $rddir/metadata.tsv \
+  --o-visualization alpha-rarefaction.qzv
 
-
+#qiime taxa barplot \
+#  --i-table asv-table-ms5.qza \
+#  --i-taxonomy taxonomy.qza \
+#  --m-metadata-file sample-metadata.tsv \
+#  --o-visualization taxa-bar-plots.qzv
 
 
 
