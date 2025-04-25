@@ -74,7 +74,7 @@ echo "performing tabulate-seqs action..."
 qiime feature-table tabulate-seqs \
   --i-data $denoised/asv-seqs.qza \
   --m-metadata-file $filtreads/asv-frequencies.qza \
-  --o-visualization $frqzv/asv-seqs.qzv
+  --o-visualization $filtreads/asv-seqs.qzv
 
 filtfeat="$usdir/filtered.features"
 mkdir -p $filtfeat
