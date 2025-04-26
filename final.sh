@@ -52,85 +52,91 @@ denoised="$usdir/denoised.data"
 #   --o-visualization $denoised/stats.qzv
 
 filtreads="$usdir/filtered.reads"
-mkdir -p $filtreads
+#mkdir -p $filtreads
 
 #Removing poor quality samples based on stats.qzv: Sample ODR-3-3 lacks read count. Any samples with less than 1000 reads removed from dataset. 
-echo "removing sample ODR-3-3"
-qiime feature-table filter-samples \
-   --i-table $denoised/asv-table.qza \
-   --p-min-frequency 1000 \
-   --o-filtered-table $filtreads/asv-filtered-table.qza
+#echo "removing sample ODR-3-3"
+#qiime feature-table filter-samples \
+#   --i-table $denoised/asv-table.qza \
+#   --p-min-frequency 1000 \
+#   --o-filtered-table $filtreads/asv-filtered-table.qza
 
-echo "performing feature-table summarize action..."
-qiime feature-table summarize-plus \
-  --i-table $filtreads/asv-filtered-table.qza \
-  --m-metadata-file $rddir/metadata.tsv \
-  --o-summary $filtreads/asv-table.qzv \
-  --o-sample-frequencies $filtreads/sample-frequencies.qza \
-  --o-feature-frequencies $filtreads/asv-frequencies.qza
+#echo "performing feature-table summarize action..."
+#qiime feature-table summarize-plus \
+#  --i-table $filtreads/asv-filtered-table.qza \
+#  --m-metadata-file $rddir/metadata.tsv \
+#  --o-summary $filtreads/asv-table.qzv \
+#  --o-sample-frequencies $filtreads/sample-frequencies.qza \
+#  --o-feature-frequencies $filtreads/asv-frequencies.qza
 
 #Compiled table created of all ASV sequences with frequency data.
-echo "performing tabulate-seqs action..."
-qiime feature-table tabulate-seqs \
-  --i-data $denoised/asv-seqs.qza \
-  --m-metadata-file $filtreads/asv-frequencies.qza \
-  --o-visualization $filtreads/asv-seqs.qzv
+#echo "performing tabulate-seqs action..."
+#qiime feature-table tabulate-seqs \
+#  --i-data $denoised/asv-seqs.qza \
+#  --m-metadata-file $filtreads/asv-frequencies.qza \
+#  --o-visualization $filtreads/asv-seqs.qzv
 
 filtfeat="$usdir/filtered.features"
-mkdir -p $filtfeat
+#mkdir -p $filtfeat
 
 #Filtering feature table: all features must be present in 50% of samples.
-echo "filtering feature table..."
-qiime feature-table filter-features \
-  --i-table $filtreads/asv-filtered-table.qza \
-  --p-min-samples 5 \
-  --o-filtered-table $filtfeat/asv-table-ms5.qza
+#echo "filtering feature table..."
+#qiime feature-table filter-features \
+#  --i-table $filtreads/asv-filtered-table.qza \
+#  --p-min-samples 5 \
+#  --o-filtered-table $filtfeat/asv-table-ms5.qza
 
-echo "filtering sequences..."
-qiime feature-table filter-seqs \
-  --i-data $denoised/asv-seqs.qza \
-  --i-table $filtfeat/asv-table-ms5.qza \
-  --o-filtered-data $filtfeat/asv-seqs-ms5.qza
+#echo "filtering sequences..."
+#qiime feature-table filter-seqs \
+#  --i-data $denoised/asv-seqs.qza \
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --o-filtered-data $filtfeat/asv-seqs-ms5.qza
 
-echo "summarizing feature tables..."
-qiime feature-table summarize-plus \
-  --i-table $filtfeat/asv-table-ms5.qza \
-  --m-metadata-file $rddir/metadata.tsv \
-  --o-summary $filtfeat/asv-table-ms5.qzv \
-  --o-sample-frequencies $filtfeat/sample-frequencies-ms5.qza \
-  --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
+#echo "summarizing feature tables..."
+#qiime feature-table summarize-plus \
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --m-metadata-file $rddir/metadata.tsv \
+#  --o-summary $filtfeat/asv-table-ms5.qzv \
+#  --o-sample-frequencies $filtfeat/sample-frequencies-ms5.qza \
+#  --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
 
 tools="$datadir/tools"
-mkdir $tools
+#mkdir $tools
 
-wget -O 'suboptimal-16S-rRNA-classifier.qza' \
-  'https://gut-to-soil-tutorial.readthedocs.io/en/latest/data/gut-to-soil/suboptimal-16S-rRNA-classifier.qza'
+#wget -O 'suboptimal-16S-rRNA-classifier.qza' \
+#  'https://gut-to-soil-tutorial.readthedocs.io/en/latest/data/gut-to-soil/suboptimal-16S-rRNA-classifier.qza'
 
-mv suboptimal-16S-rRNA-classifier.qza $tools
+#mv suboptimal-16S-rRNA-classifier.qza $tools
 
 tdir="$usdir/taxonomic.classification"
-mkdir -p $tdir
+#mkdir -p $tdir
 
-echo "assigning taxonomy to sequences..."
-qiime feature-classifier classify-sklearn \
-  --i-classifier $tools/suboptimal-16S-rRNA-classifier.qza \
-  --i-reads $filtfeat/asv-seqs-ms5.qza \
-  --o-classification $tdir/taxonomy.qza
+#echo "assigning taxonomy to sequences..."
+#qiime feature-classifier classify-sklearn \
+#  --i-classifier $tools/suboptimal-16S-rRNA-classifier.qza \
+#  --i-reads $filtfeat/asv-seqs-ms5.qza \
+#  --o-classification $tdir/taxonomy.qza
 
-echo "visualizing ASV sequences with taxonomic classifications..."
-qiime feature-table tabulate-seqs \
-   --i-data $filtfeat/asv-seqs-ms5.qza \
-   --i-taxonomy $tdir/taxonomy.qza/ \
-   --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
-   --o-visualization $tdir/asv-seqs-ms2.qzv
+#echo "visualizing ASV sequences with taxonomic classifications..."
+#qiime feature-table tabulate-seqs \
+#   --i-data $filtfeat/asv-seqs-ms5.qza \
+#   --i-taxonomy $tdir/taxonomy.qza/ \
+#   --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
+#   --o-visualization $tdir/asv-seqs-ms2.qzv
 
 # === Step 3: Complete downstream analysis (INCLUDES.....) ===
 
 dsdir="$datadir/downstream.analysis"
-mkdir $dsdir
+#mkdir $dsdir
 cd $dsdir
 kmers="$dsdir/kmer.diversity"
-mkdir -p $kmers
+
+#echo "downloading qiime2 boots environment..."
+#conda env create \
+#   --name q2-boots-amplicon-2025.4 \
+#   --file https://raw.githubusercontent.com/caporaso-lab/q2-boots/refs/heads/main/environment-files/q2-boots-qiime2-amplicon-2025.4.yml
+
+conda activate q2-boots-amplicon-2025.4
 
 qiime boots kmer-diversity \
   --i-table $filtfeat/asv-table-ms5.qza \
@@ -144,18 +150,20 @@ qiime boots kmer-diversity \
   --output-dir $kmers
 
 divres="$dsdir/diversity.results"
-mkdir -p $divres
+#mkdir -p $divres
 
-qiime diversity alpha-rarefaction \
-  --i-table $filtfeat/asv-table-ms5.qza \
-  --p-max-depth 4500 \
-  --m-metadata-file $rddir/metadata.tsv \
-  --o-visualization $divres/alpha-rarefaction.qzv
+#echo "creating alpha-rarefaction plot..."
+#qiime diversity alpha-rarefaction \
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --p-max-depth 4500 \
+#  --m-metadata-file $rddir/metadata.tsv \
+#  --o-visualization $divres/alpha-rarefaction.qzv
 
-qiime taxa barplot \
-  --i-table $fdir/asv-table-ms5.qza \
-  --i-taxonomy $tdir/taxonomy.qza \
-  --m-metadata-file $rdir/metadata.tsv \
-  --o-visualization $divres/taxa-bar-plots.qzv
+#echo "creating taxonomic barplot..."
+#qiime taxa barplot \
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --i-taxonomy $tdir/taxonomy.qza \
+#  --m-metadata-file $rddir/metadata.tsv \
+#  --o-visualization $divres/taxa-bar-plots.qzv
 
 date
