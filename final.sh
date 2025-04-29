@@ -44,6 +44,16 @@ denoised="$usdir/denoised.data"
 #  --o-table $denoised/asv-table.qza \
 #  --o-denoising-stats $denoised/stats.qza
 
+#FIX maybe where this is located
+export="$rddir/exported-rep-seqs"
+#mkdir -p $export
+
+#exporting asv representative sequences into BLAST file
+#qiime tools export \
+#   --input-path $denoised/asv-seqs.qza \
+#   --output-path $export
+
+echo done
 #cd $usdir
 
 #echo "visualizing metadata stats..."
@@ -103,38 +113,59 @@ filtfeat="$usdir/filtered.features"
 tools="$datadir/tools"
 #mkdir $tools
 
-#wget -O 'suboptimal-16S-rRNA-classifier.qza' \
-#  'https://gut-to-soil-tutorial.readthedocs.io/en/latest/data/gut-to-soil/suboptimal-16S-rRNA-classifier.qza'
+classifier="$tools/silva-CUSTOM.qza"
 
-#mv suboptimal-16S-rRNA-classifier.qza $tools
+#echo "training classifier"
+#wget -O silva-138-99-seqs.qza https://data.qiime2.org/2024.2/common/silva-138-99-seqs.qza
+#wget -O silva-138-99-tax.qza https://data.qiime2.org/2024.2/common/silva-138-99-tax.qza
+
+#qiime feature-classifier extract-reads \
+#  --i-sequences silva-138-99-seqs.qza \
+#  --p-f-primer GTGCCAGCMGCCGCGGTAA \
+#  --p-r-primer GGACTACHVGGGTWTCTAAT \
+#  --p-trunc-len 250 \
+#  --o-reads silva-refseqs-515-806.qza
+
+#qiime feature-classifier fit-classifier-naive-bayes \
+#  --i-reference-reads silva-refseqs-515-806.qza \
+#  --i-reference-taxonomy silva-138-99-tax.qza \
+#  --o-classifier $classifier
+
+#echo "classifier trained"
+
+for file in $datadir; do
+   if [[ $file == silva* ]]; then
+      mv $file $tools
+   fi
+done
 
 tdir="$usdir/taxonomic.classification"
-#mkdir -p $tdir
+mkdir -p $tdir
 
-#echo "assigning taxonomy to sequences..."
-#qiime feature-classifier classify-sklearn \
-#  --i-classifier $tools/suboptimal-16S-rRNA-classifier.qza \
-#  --i-reads $filtfeat/asv-seqs-ms5.qza \
-#  --o-classification $tdir/taxonomy.qza
+echo "assigning taxonomy to sequences..."
+qiime feature-classifier classify-sklearn \
+  --i-classifier $classifier \
+  --i-reads $filtfeat/asv-seqs-ms5.qza \
+  --o-classification $tdir/taxonomy.qza
 
-#echo "visualizing ASV sequences with taxonomic classifications..."
-#qiime feature-table tabulate-seqs \
-#   --i-data $filtfeat/asv-seqs-ms5.qza \
-#   --i-taxonomy $tdir/taxonomy.qza/ \
-#   --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
-#   --o-visualization $tdir/asv-seqs-ms2.qzv
+echo "visualizing ASV sequences with taxonomic classifications..."
+qiime feature-table tabulate-seqs \
+   --i-data $filtfeat/asv-seqs-ms5.qza \
+   --i-taxonomy $tdir/taxonomy.qza/ \
+   --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
+   --o-visualization $tdir/taxonomy-classification.qzv
 
 # === Step 3: Complete downstream analysis (INCLUDES.....) ===
 
 dsdir="$datadir/downstream.analysis"
-#mkdir $dsdir
+mkdir $dsdir
 cd $dsdir
 kmers="$dsdir/kmer.diversity"
 
-#echo "downloading qiime2 boots environment..."
-#conda env create \
-#   --name q2-boots-amplicon-2025.4 \
-#   --file https://raw.githubusercontent.com/caporaso-lab/q2-boots/refs/heads/main/environment-files/q2-boots-qiime2-amplicon-2025.4.yml
+echo "downloading qiime2 boots environment..."
+conda env create \
+   --name q2-boots-amplicon-2025.4 \
+   --file https://raw.githubusercontent.com/caporaso-lab/q2-boots/refs/heads/main/environment-files/q2-boots-qiime2-amplicon-2025.4.yml
 
 conda activate q2-boots-amplicon-2025.4
 
@@ -150,20 +181,20 @@ qiime boots kmer-diversity \
   --output-dir $kmers
 
 divres="$dsdir/diversity.results"
-#mkdir -p $divres
+mkdir -p $divres
 
-#echo "creating alpha-rarefaction plot..."
-#qiime diversity alpha-rarefaction \
-#  --i-table $filtfeat/asv-table-ms5.qza \
-#  --p-max-depth 4500 \
-#  --m-metadata-file $rddir/metadata.tsv \
-#  --o-visualization $divres/alpha-rarefaction.qzv
+echo "creating alpha-rarefaction plot..."
+qiime diversity alpha-rarefaction \
+  --i-table $filtfeat/asv-table-ms5.qza \
+  --p-max-depth 4500 \
+  --m-metadata-file $rddir/metadata.tsv \
+  --o-visualization $divres/alpha-rarefaction.qzv
 
-#echo "creating taxonomic barplot..."
-#qiime taxa barplot \
-#  --i-table $filtfeat/asv-table-ms5.qza \
-#  --i-taxonomy $tdir/taxonomy.qza \
-#  --m-metadata-file $rddir/metadata.tsv \
-#  --o-visualization $divres/taxa-bar-plots.qzv
+echo "creating taxonomic barplot..."
+qiime taxa barplot \
+  --i-table $filtfeat/asv-table-ms5.qza \
+  --i-taxonomy $tdir/taxonomy.qza \
+  --m-metadata-file $rddir/metadata.tsv \
+  --o-visualization $divres/taxa-bar-plots.qzv
 
 date
