@@ -197,4 +197,37 @@ divres="$dsdir/diversity.results"
 #  --m-metadata-file $rddir/metadata.tsv \
 #  --o-visualization $divres/taxa-bar-plots.qzv
 
+diffabun="$dsdir/differential.abundance"
+mkdir -p $diffabun
+
+echo "filtering metadata table..."
+qiime feature-table filter-samples \
+  --i-table $filtfeat/asv-table-ms5.qza \
+  --m-metadata-file $rddir/metadata.tsv \
+  --p-where 'sample_type IN ("duckweed", "water")' \
+  --o-filtered-table $diffabun/asv-table-ms5-dominant-sample-types.qza
+
+#collapsing ASVs into level 7 taxonomy (species)
+echo "collapsing ASVs into species..."
+qiime taxa collapse \
+  --i-table $diffabun/asv-table-ms5-dominant-sample-types.qza \
+  --i-taxonomy $tdir/taxonomy.qza \
+  --p-level 7 \
+  --o-collapsed-table $diffabun/genus-table-ms5-dominant-sample-types.qza
+
+echo "testing differentially abundance across species..."
+qiime composition ancombc \
+  --i-table $diffabun/genus-table-ms5-dominant-sample-types.qza \
+  --m-metadata-file $rddir/metadata.tsv \
+  --p-formula sample_type \
+  --p-reference-levels 'sample_type::duckweed' \
+  --o-differentials $diffabun/genus-ancombc.qza
+
+echo "visualizing differential abundance results..."
+qiime composition da-barplot \
+  --i-data $diffabun/genus-ancombc.qza \
+  --p-significance-threshold 0.001 \
+  --p-level-delimiter ';' \
+  --o-visualization $diffabun/genus-ancombc.qzv
+
 date
