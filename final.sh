@@ -156,19 +156,44 @@ tdir="$usdir/taxonomic.classification"
 #   --o-visualization $tdir/taxonomy-classification.qzv
 
 tree="$usdir/phylogenetic.tree"
-mkdir -p $tree
+#mkdir -p $tree
+aligned="$tree/aligned.sequences"
+#mkdir -p $aligned
 
-aligned="$tree/aligned.rep.seqs"
-mkdir -p $aligned
+#echo "aligning sequences..."
+#qiime alignment mafft \
+#   --i-sequences $filtfeat/asv-seqs-ms5.qza \
+#   --o-alignment $aligned/aligned-asv-seqs.qza
 
-echo "creating phylogenetic tree..."
-qiime phylogeny align-to-tree-mafft-fasttree \
-   --i-sequences $filtfeat/asv-seqs-ms5.qza \
-   --o-alignment $aligned/aligned-rep-seqs.qza \
-   --o-masked-alignment $aligned/masked-aligned-rep-seqs-qza \
-   --o-tree $tree/unrooted-tree.qza \
-   --o-rooted-tree $tree/rooted-tree.qza \
+#echo "Building phylogenetic tree..."
+#qiime phylogeny fasttree \
+#  --i-alignment $aligned/aligned-asv-seqs.qza \
+#  --o-tree $tree/unrooted-tree.qza
 
+#echo "Rooting the phylogenetic tree..."
+#qiime phylogeny midpoint-root \
+#  --i-tree $tree/unrooted-tree.qza \
+#  --o-rooted-tree $tree/rooted-tree.qza
+
+echo "Installing empress..."
+conda install -c qiime2 -c conda-forge q2-empress
+
+echo "Refreshing QIIME 2 cache..."
+qiime dev refresh-cache
+
+echo "Adding taxonomic data to the phylogenetic tree (Empress)..."
+qiime empress tree-plot \
+  --i-tree "$tree/rooted-tree.qza" \
+  --m-feature-metadata-file "$tdir/taxonomy.qza" \
+  --o-visualization "$tree/empress-tree-tax.qzv"
+
+echo "Adding metadata and taxonomic data to the phylogenetic tree (Empress)..."
+qiime empress community-plot \
+  --i-tree "$tree/rooted-tree.qza" \
+  --i-feature-table "$filtfeat/asv-table-ms5.qza" # Using filtered table
+  --m-sample-metadata-file "$rddir/metadata.tsv" \
+  --m-feature-metadata-file "$tdir/taxonomy.qza" \
+  --o-visualization "$tree/empress-tree-tax-table.qzv"
 
 # === Step 3: Complete downstream analysis (INCLUDES.....) ===
 
@@ -245,4 +270,51 @@ divres="$dsdir/diversity.results"
 #  --p-level-delimiter ';' \
 #  --o-visualization $diffabun/genus-ancombc.qzv
 
+# === Step 6: Longitudinal Analysis (Requires R) ===
+echo "Preparing metadata for longitudinal analysis (R)..."
+echo "Running R script to clean metadata..."
+Rscript -e "
+library(readr)
+library(dplyr)
+
+df <- read_tsv('$rddir/metadata.tsv')
+
+df2 <- df %>%
+  select(-c('gsrs', 'gsrs-diff', 'administration-route'))
+
+df2[is.na(df2)] <- ''
+write_tsv(df2, '$rddir/clean-metadata.tsv', na = '')
+"
+
+echo "Filtering feature table (no donor samples)..."
+qiime feature-table filter-samples \
+  --i-table "$filtfeat/asv-table-ms5.qza" # Using filtered table
+  --m-metadata-file "$rddir/clean-metadata.tsv" \
+  --p-where \"[treatment-group] IN ('control', 'treatment')\" \
+  --o-filtered-table "$longitudinal/no-donor-table.qza"
+
+echo "Collapsing ASVs to genus level for longitudinal analysis..."
+qiime taxa collapse \
+  --i-table "$longitudinal/no-donor-table.qza" \
+  --i-taxonomy "$tdir/taxonomy.qza" \
+  --p-level 6 \
+  --o-collapsed-table "$longitudinal/no-donor-genus-table.qza"
+
+echo "Converting counts to relative frequencies..."
+qiime feature-table relative-frequency \
+  --i-table "$longitudinal/no-donor-genus-table.qza" \
+  --o-relative-frequency-table "$longitudinal/no-donor-genus-relFreq-table.qza"
+
+echo "Creating longitudinal volatility plot..."
+qiime longitudinal volatility \
+  --i-table "$longitudinal/no-donor-genus-relFreq-table.qza" \
+  --p-state-column week \
+  --m-metadata-file "$rddir/clean-metadata.tsv" \
+  --p-individual-id-column subject-id \
+  --p-default-group-column treatment-group \
+  --o-visualization "$longitudinal/volatility-plot.qzv"
+
+# === Final Step: Log Completion ===
 date
+echo "Pipeline completed successfully!"
+
