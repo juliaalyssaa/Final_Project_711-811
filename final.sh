@@ -3,6 +3,7 @@
 date
 source activate qiime2-amplicon-2024.5
 
+homedir="/home/users/kgr1020/GEN711FinalProject"
 maindir="/home/users/kgr1020/GEN711FinalProject/Final_Project_711-811"
 rddir="$maindir/rawdata" # used to store metadata.tsv and manifest.tsv
 demux="/home/users/kgr1020/GEN711FinalProject/demux.files" # files too large to store on github
@@ -108,7 +109,7 @@ qiime feature-table summarize-plus \
   --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
 
 # Directory for all downloaded tools used during analysis of data
-tools="$datadir/tools"
+tools="$homedir/tools"
 mkdir $tools
 
 # Downloaded and training classifier for taxonomic classification of data based on 16sRNA data with amplified V4 region
