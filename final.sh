@@ -161,7 +161,7 @@ qiime feature-table tabulate-seqs \
    --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
    --o-visualization $tdir/taxonomy-classification.qzv
 
-# Generating rooted phylogenetic tree from ASV sequences using MAFFT and FastTree for alignment and tree construction. Upload results into iTOL for phylogenetic tree.
+# Generating rooted phylogenetic tree from ASV sequences using MAFFT and FastTree for alignment and tree construction. Upload rooted_tree.qza and taxonomy.qza into iTOL for phylogenetic tree.
 tree="$usdir/phylogenetic.tree"
 
 qiime phylogeny align-to-tree-mafft-fasttree \
