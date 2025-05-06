@@ -14,122 +14,122 @@ cd $datadir
 # === Step 1: Import data into qiime2 for analysis ===
 
 echo "importing sequences into qiime..."
-qiime tools import \
- --type 'SampleData[PairedEndSequencesWithQuality]' \
- --input-path $rddir/manifest.tsv \
- --output-path $demux/demux.qza \
- --input-format PairedEndFastqManifestPhred33V2
+#qiime tools import \
+# --type 'SampleData[PairedEndSequencesWithQuality]' \
+# --input-path $rddir/manifest.tsv \
+# --output-path $demux/demux.qza \
+# --input-format PairedEndFastqManifestPhred33V2
 
-echo "converting to qzv file..."
-qiime demux summarize \
- --i-data $demux/demux.qza \
- --o-visualization $demux/demux.qzv
+#echo "converting to qzv file..."
+#qiime demux summarize \
+# --i-data $demux/demux.qza \
+# --o-visualization $demux/demux.qzv
 
 # === Step 2: Complete upstream analysis of data (quality control, feature table construction, filtering, taxonomic classification)   ===
 
 # Directories for all upstream analysis outputs and denoised data outputs
 usdir="$datadir/upstream.analysis"
 denoised="$usdir/denoised.data"
-mkdir -p $usdir $denoised
+#mkdir -p $usdir $denoised
 cd $usdir
 
 # Denoising data based on demux.qzv: Forward read quality drops at sequence base 226 and reverse read quality drops at sequence base 200.
-echo "filtering reads..."
-qiime dada2 denoise-paired \
-  --i-demultiplexed-seqs $demux/demux.qza \
-  --p-trunc-len-f 220 \
-  --p-trunc-len-r 200 \
-  --p-n-threads 8 \
-  --o-representative-sequences $denoised/asv-seqs.qza \
-  --o-table $denoised/asv-table.qza \
-  --o-denoising-stats $denoised/stats.qza
+#echo "filtering reads..."
+#qiime dada2 denoise-paired \
+#  --i-demultiplexed-seqs $demux/demux.qza \
+#  --p-trunc-len-f 220 \
+#  --p-trunc-len-r 200 \
+#  --p-n-threads 8 \
+#  --o-representative-sequences $denoised/asv-seqs.qza \
+#  --o-table $denoised/asv-table.qza \
+#  --o-denoising-stats $denoised/stats.qza
 
 # Generating a QIIME2 visualization of denoised data to inspect quality
-echo "visualizing metadata stats..."
-qiime metadata tabulate \
-   --m-input-file $denoised/stats.qza \
-   --o-visualization $denoised/stats.qzv
+#echo "visualizing metadata stats..."
+#qiime metadata tabulate \
+#   --m-input-file $denoised/stats.qza \
+#   --o-visualization $denoised/stats.qzv
 
 # Exporting asv representative sequences into BLAST-able file
 export="$maindir/exported-rep-seqs" 
-mkdir -p $export
-qiime tools export \
-   --input-path $denoised/asv-seqs.qza \
-   --output-path $export
+#mkdir -p $export
+#qiime tools export \
+#   --input-path $denoised/asv-seqs.qza \
+#   --output-path $export
 
 # Directories for filtered data analysis outputs
 filtreads="$usdir/filtered.reads"
 filtfeat="$usdir/filtered.features"
-mkdir -p $filtreads $filtfeat
+#mkdir -p $filtreads $filtfeat
 
 # Removing poor quality samples based on stats.qzv: Sample ODR-3-3 lacks read count. Any samples with less than 1000 reads removed from dataset. 
-echo "removing sample ODR-3-3"
-qiime feature-table filter-samples \
-   --i-table $denoised/asv-table.qza \
-   --p-min-frequency 1000 \
-   --o-filtered-table $filtreads/asv-filtered-table.qza
+#echo "removing sample ODR-3-3"
+#qiime feature-table filter-samples \
+#   --i-table $denoised/asv-table.qza \
+#   --p-min-frequency 1000 \
+#   --o-filtered-table $filtreads/asv-filtered-table.qza
 
 # Summarizing the filtered ASV feature table with metadata information for further analysis
-echo "performing feature-table summarize action..."
-qiime feature-table summarize-plus \
-  --i-table $filtreads/asv-filtered-table.qza \
-  --m-metadata-file $rddir/metadata.tsv \
-  --o-summary $filtreads/asv-table.qzv \
-  --o-sample-frequencies $filtreads/sample-frequencies.qza \
-  --o-feature-frequencies $filtreads/asv-frequencies.qza
+#echo "performing feature-table summarize action..."
+#qiime feature-table summarize-plus \
+ # --i-table $filtreads/asv-filtered-table.qza \
+ # --m-metadata-file $rddir/metadata.tsv \
+ # --o-summary $filtreads/asv-table.qzv \
+ # --o-sample-frequencies $filtreads/sample-frequencies.qza \
+ # --o-feature-frequencies $filtreads/asv-frequencies.qza
 
 # Compiled table created of all ASV sequences with frequency data.
-echo "performing tabulate-seqs action..."
-qiime feature-table tabulate-seqs \
-  --i-data $denoised/asv-seqs.qza \
-  --m-metadata-file $filtreads/asv-frequencies.qza \
-  --o-visualization $filtreads/asv-seqs.qzv
+#echo "performing tabulate-seqs action..."
+#qiime feature-table tabulate-seqs \
+ # --i-data $denoised/asv-seqs.qza \
+ # --m-metadata-file $filtreads/asv-frequencies.qza \
+ # --o-visualization $filtreads/asv-seqs.qzv
 
 # Filtering feature table: all features must be present in 25% of samples.
-echo "filtering feature table..."
-qiime feature-table filter-features \
-  --i-table $filtreads/asv-filtered-table.qza \
-  --p-min-samples 5 \
-  --o-filtered-table $filtfeat/asv-table-ms5.qza
+#echo "filtering feature table..."
+#qiime feature-table filter-features \
+#  --i-table $filtreads/asv-filtered-table.qza \
+#  --p-min-samples 5 \
+#  --o-filtered-table $filtfeat/asv-table-ms5.qza
 
 # Filtering representative ASV sequences to match those relevant and in the feature table
-echo "filtering sequences..."
-qiime feature-table filter-seqs \
-  --i-data $denoised/asv-seqs.qza \
-  --i-table $filtfeat/asv-table-ms5.qza \
-  --o-filtered-data $filtfeat/asv-seqs-ms5.qza
+#echo "filtering sequences..."
+#qiime feature-table filter-seqs \
+#  --i-data $denoised/asv-seqs.qza \
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --o-filtered-data $filtfeat/asv-seqs-ms5.qza
 
 # Summarizing filtered feature table with metadata information
-echo "summarizing feature tables..."
-qiime feature-table summarize-plus \
-  --i-table $filtfeat/asv-table-ms5.qza \
-  --m-metadata-file $rddir/metadata.tsv \
-  --o-summary $filtfeat/asv-table-ms5.qzv \
-  --o-sample-frequencies $filtfeat/sample-frequencies-ms5.qza \
-  --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
+#echo "summarizing feature tables..."
+#qiime feature-table summarize-plus \
+#  --i-table $filtfeat/asv-table-ms5.qza \
+#  --m-metadata-file $rddir/metadata.tsv \
+#  --o-summary $filtfeat/asv-table-ms5.qzv \
+#  --o-sample-frequencies $filtfeat/sample-frequencies-ms5.qza \
+#  --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
 
 # Directory for all downloaded tools used during analysis of data
 tools="$homedir/tools"
-mkdir $tools
+#mkdir $tools
 
 # Downloaded and training classifier for taxonomic classification of data based on 16sRNA data with amplified V4 region
 classifier="$tools/silva-CUSTOM.qza" #variable for custom trained classifier
 
-echo "training classifier..."
-wget -O silva-138-99-seqs.qza https://data.qiime2.org/2024.2/common/silva-138-99-seqs.qza
-wget -O silva-138-99-tax.qza https://data.qiime2.org/2024.2/common/silva-138-99-tax.qza
+#echo "training classifier..."
+#wget -O silva-138-99-seqs.qza https://data.qiime2.org/2024.2/common/silva-138-99-seqs.qza
+#wget -O silva-138-99-tax.qza https://data.qiime2.org/2024.2/common/silva-138-99-tax.qza
 
-qiime feature-classifier extract-reads \
- --i-sequences silva-138-99-seqs.qza \
-  --p-f-primer GTGCCAGCMGCCGCGGTAA \
-  --p-r-primer GGACTACHVGGGTWTCTAAT \
-  --p-trunc-len 250 \
-  --o-reads silva-refseqs-515-806.qza
+#qiime feature-classifier extract-reads \
+# --i-sequences silva-138-99-seqs.qza \
+#  --p-f-primer GTGCCAGCMGCCGCGGTAA \
+#  --p-r-primer GGACTACHVGGGTWTCTAAT \
+#  --p-trunc-len 250 \
+#  --o-reads silva-refseqs-515-806.qza
 
-qiime feature-classifier fit-classifier-naive-bayes \
-  --i-reference-reads silva-refseqs-515-806.qza \
-  --i-reference-taxonomy silva-138-99-tax.qza \
-  --o-classifier $classifier
+#qiime feature-classifier fit-classifier-naive-bayes \
+#  --i-reference-reads silva-refseqs-515-806.qza \
+#  --i-reference-taxonomy silva-138-99-tax.qza \
+#  --o-classifier $classifier
 
 # For-Do-Done loop for organizing downloaded classifiers into the tools directory
 for item in $(ls $usdir)
@@ -144,29 +144,40 @@ done
 # Directory for storing taxonomic classification of sequences and phylogenetic tree
 tdir="$usdir/taxonomic.classification"
 tree="$usdir/phylogenetic.tree"
-mkdir -p $tdir
+#mkdir -p $tdir
 
 # Assigning taxonomy to samples using custom silva classifier
-echo "assigning taxonomy to sequences..."
-qiime feature-classifier classify-sklearn \
-  --i-classifier $classifier \
-  --i-reads $filtfeat/asv-seqs-ms5.qza \
-  --o-classification $tdir/taxonomy.qza
+#echo "assigning taxonomy to sequences..."
+#qiime feature-classifier classify-sklearn \
+#  --i-classifier $classifier \
+#  --i-reads $filtfeat/asv-seqs-ms5.qza \
+#  --o-classification $tdir/taxonomy.qza
 
 # Visualizing ASV sequences with taxonomic classifications
-echo "visualizing ASV sequences with taxonomic classifications..."
-qiime feature-table tabulate-seqs \
-   --i-data $filtfeat/asv-seqs-ms5.qza \
-   --i-taxonomy $tdir/taxonomy.qza \
-   --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
-   --o-visualization $tdir/taxonomy-classification.qzv
+#echo "visualizing ASV sequences with taxonomic classifications..."
+#qiime feature-table tabulate-seqs \
+#   --i-data $filtfeat/asv-seqs-ms5.qza \
+#   --i-taxonomy $tdir/taxonomy.qza \
+#   --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
+#   --o-visualization $tdir/taxonomy-classification.qzv
 
 # Generating rooted phylogenetic tree from ASV sequences using MAFFT and FastTree for alignment and tree construction. Upload rooted_tree.qza and taxonomy.qza into iTOL for phylogenetic tree.
 tree="$usdir/phylogenetic.tree"
 
-qiime phylogeny align-to-tree-mafft-fasttree \
-  --i-sequences $filtfeat/asv-seqs-ms5.qza \
-  --output-dir $tree
+#qiime phylogeny align-to-tree-mafft-fasttree \
+#  --i-sequences $filtfeat/asv-seqs-ms5.qza \
+ # --output-dir $tree
+
+echo "Filtering taxonomy to keep only genus and species levels..."
+qiime metadata tabulate \
+  --m-input-file $tdir/taxonomy.qza \
+  --o-visualization $tdir/taxonomy-filtered.qzv
+
+qiime tools export \
+  --input-path $tdir/taxonomy.qza \
+  --output-path $tdir/exported-taxonomy
+
+awk -F ";" '{print $NF, $(NF-1)}' $tdir/exported-taxonomy/taxonomy.tsv > $tdir/genus_species_taxonomy.tsv
 
 # === Step 3: Complete downstream analysis (alpha and beta diversity analysis) ===
 
