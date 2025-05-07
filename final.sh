@@ -3,7 +3,8 @@
 date
 source activate qiime2-amplicon-2024.5
 
-homedir="/home/users/kgr1020/GEN711FinalProject"
+home="$1" # first argument in command line should be home directory (example : /home/users/kgr1020)
+homedir="$home/GEN711FinalProject"
 maindir="/home/users/kgr1020/GEN711FinalProject/Final_Project_711-811"
 rddir="$maindir/rawdata" # used to store metadata.tsv and manifest.tsv
 demux="/home/users/kgr1020/GEN711FinalProject/demux.files" # files too large to store on github
@@ -32,6 +33,8 @@ usdir="$datadir/upstream.analysis"
 denoised="$usdir/denoised.data"
 mkdir -p $usdir $denoised
 cd $usdir
+
+# === Step 2A: Denoise data and construct feature tables  ===
 
 # Denoising data based on demux.qzv: Forward read quality drops at sequence base 226 and reverse read quality drops at sequence base 200.
 echo "filtering reads..."
@@ -85,6 +88,8 @@ qiime feature-table tabulate-seqs \
   --m-metadata-file $filtreads/asv-frequencies.qza \
   --o-visualization $filtreads/asv-seqs.qzv
 
+# === Step 2B: Filter features from data  ===
+
 # Filtering feature table: all features must be present in 25% of samples.
 echo "filtering feature table..."
 qiime feature-table filter-features \
@@ -107,6 +112,8 @@ qiime feature-table summarize-plus \
   --o-summary $filtfeat/asv-table-ms5.qzv \
   --o-sample-frequencies $filtfeat/sample-frequencies-ms5.qza \
   --o-feature-frequencies $filtfeat/asv-frequencies-ms5.qza
+
+# === Step 2C: Taxonomic Classification  ===
 
 # Directory for all downloaded tools used during analysis of data
 tools="$homedir/tools"
@@ -161,15 +168,59 @@ qiime feature-table tabulate-seqs \
    --m-metadata-file $filtfeat/asv-frequencies-ms5.qza \
    --o-visualization $tdir/taxonomy-classification.qzv
 
-# Generating rooted phylogenetic tree from ASV sequences using MAFFT and FastTree for alignment and tree construction. Upload rooted_tree.qza and taxonomy.qza into iTOL for phylogenetic tree.
-tree="$usdir/phylogenetic.tree"
+# === Step 2D: Phylogenetic Tree Construction  ===
 
+# Generating rooted phylogenetic tree from ASV sequences using MAFFT and FastTree for alignment and tree construction. Upload rooted_tree.qza and taxonomy.qza into iTOL for phylogenetic tree.
 echo "constructing phylogenetic tree..."
 qiime phylogeny align-to-tree-mafft-fasttree \
   --i-sequences $filtfeat/asv-seqs-ms5.qza \
   --output-dir $tree
 
-# === Step 3: Complete downstream analysis (alpha and beta diversity analysis) ===
+# Creating exported taxonomy.qza, feature-table.qza, and ASV table files for iTOL upload
+iTOL="$tree/iTOL.files"
+
+echo "exporting files for use in iTOL..."
+qiime tools export \
+  --input-path $tree/rooted_tree.qza \
+  --output-path $iTOL/exported_tree
+qiime tools export \
+  --input-path $tdir/taxonomy.qza \
+  --output-path $iTOL/exported_taxonomy
+qiime tools export \
+  --input-path $filtfeat/asv-table-ms5.qza \
+  --output-path $iTOL/exported_table
+
+echo "converting feature table into tsv format..."
+biom convert \
+  -i $iTOL/exported_table/feature-table.biom \
+  -o $iTOL/exported_table/feature-table.tsv \
+  --to-tsv
+
+# Creating iTOL.txt labels for upload into phylogenetic tree to alter node IDs to genus and species labels
+TAXONOMY="$iTOL/exported_taxonomy/taxonomy.tsv"
+OUTPUT="$iTOL/itol.txt"
+
+{
+echo "LABELS"
+echo "SEPARATOR COMMA"
+echo ""
+echo "DATA"
+} > "$OUTPUT"
+
+# Altering each line in the taxnomy file
+tail -n +2 "$TAXONOMY" | while IFS=$'\t' read -r asv_id taxonomy _; do
+    # Extract genus and species from file
+    genus=$(echo "$taxonomy" | grep -o 'g__[^;]*' | sed 's/g__//')
+    species=$(echo "$taxonomy" | grep -o 's__[^;]*' | sed 's/s__//')
+
+    # Default/fallback values if no assigned taxonomy
+    genus=${genus:-Unassigned}
+    species=${species:-sp.}
+
+    echo "$asv_id,$genus $species" >> "$OUTPUT"
+done
+
+# === Step 3: Complete downstream analysis (alpha and beta diversity analysis, differential abundance, plots/charts) ===
 
 # Directories for all downstream analysis outputs and diversity testing outputs
 dsdir="$datadir/downstream.analysis"
@@ -177,6 +228,8 @@ kmers="$dsdir/diversity.testing"
 divres="$dsdir/diversity.results"
 mkdir $dsdir $divres
 cd $dsdir
+
+# === Step 3A: Diversity Analysis  ===
 
 # Creating conda environment for QIIME2 boots commands
 echo "downloading qiime2 boots environment..."
@@ -198,6 +251,8 @@ qiime boots kmer-diversity \
   --p-beta-average-method medoid \
   --output-dir $kmers
 
+# === Step 3B: Alpha-rarefaction Plotting  ===
+
 # Generating alpha-rarefaction plot for diversity analysis
 echo "creating alpha-rarefaction plot..."
 qiime diversity alpha-rarefaction \
@@ -206,6 +261,8 @@ qiime diversity alpha-rarefaction \
   --m-metadata-file $rddir/metadata.tsv \
   --o-visualization $divres/alpha-rarefaction.qzv
 
+# === Step 3C: Taxonomic Barplot Construction  ===
+
 # Generating a taxonomic barplot to view the abundance of species within samples
 echo "creating taxonomic barplot..."
 qiime taxa barplot \
@@ -213,6 +270,8 @@ qiime taxa barplot \
   --i-taxonomy $tdir/taxonomy.qza \
   --m-metadata-file $rddir/metadata.tsv \
   --o-visualization $divres/taxa-bar-plots.qzv
+
+# === Step 3D: Differential Abundance Testing  ===
 
 # Directory for differential abundance testing outputs
 diffabun="$dsdir/differential.abundance"
