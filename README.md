@@ -28,7 +28,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   - **5 Replicates per treatment/location**
 
   <details>
-    <summary><strong>Importing Data</strong></summary>
+    <summary>Importing Data</summary>
 
     Files used: manifest.tsv and metadata.tsv (already demultiplexed)  
     imported via: cp from /tmp/ 
@@ -36,7 +36,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Denoising Preparation</strong></summary>
+    <summary>Denoising Preparation</summary>
 
     Tools used:
     - demux summarize : converts demux.qza into demux.qzv (visualized file)  
@@ -45,7 +45,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Denoising</strong></summary>
+    <summary>Denoising</summary>
 
     Tools used:
     - dada2 denoise-paired : used to denoise data  
@@ -58,7 +58,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Filtering</strong></summary>
+    <summary>Filtering</summary>
 
     Tools used:
     - feature-table filter-samples : removes samples with less than 1000 reads and removes sample ODR-3-3 (had 0 reads)  
@@ -71,7 +71,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Taxonomic Classification</strong></summary>
+    <summary>Taxonomic Classification</summary>
 
     Training Classifier  
     Tools used:
@@ -89,7 +89,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Phylogenetic Tree Construction</strong></summary>
+    <summary>Phylogenetic Tree Construction</summary>
 
     Tools used:
     - phylogeny align-to-tree-mafft-fasttree : aligns the features in feature table and creates a rooted tree  
@@ -100,7 +100,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>K-mer Based Diversity Analysis</strong></summary>
+    <summary>K-mer Based Diversity Analysis</summary>
 
     Tools used:
     - conda activate q2-boots-amplicon-2025.4 : activates QIIME2 environment with boots kmer-diversity commands  
@@ -109,7 +109,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Alpha-Rarefaction Plot</strong></summary>
+    <summary>Alpha-Rarefaction Plot</summary>
 
     Tools used:
     - diversity alpha-rarefaction: shows if selected sequencing depth contains majority of the species present
@@ -117,7 +117,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Taxonomic Bar-Plot</strong></summary>
+    <summary>Taxonomic Bar-Plot</summary>
 
     Tools used:
     - taxa barplot : shows taxonomic composition and relative abundance for each sample type
@@ -125,7 +125,7 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   </details>
 
   <details>
-    <summary><strong>Differential Abundance</strong></summary>
+    <summary>Differential Abundance</summary>
 
     Tools used:
     - feature-table filter-samples : filters features to compare duckweed and water samples  
@@ -141,46 +141,45 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
   <summary><strong>Results</strong></summary>
 
   <details>
-    <summary><strong>Denoising Plot</strong></summary>
+    <summary>Denoising Plot</summary>
 
-    ![Denoising Plot](https://github.com/user-attachments/assets/18a8d6dc-527b-4f45-9df0-ce0cd4822380?raw=true)
-
-  </details>
-
-  <details>
-    <summary><strong>Alpha-Rarefaction Plot</strong></summary>
-
-    ![Alpha-Rarefaction](https://github.com/user-attachments/assets/ad03de24-a3ff-4a72-be51-e2675b12d1b0?raw=true)
+    ![Denoising Plot](images/DenoiseResults.png)
 
   </details>
 
   <details>
-    <summary><strong>Diversity Analysis</strong></summary>
+    <summary>Alpha-Rarefaction Plot</summary>
 
-    ![Diversity 1](https://github.com/user-attachments/assets/3efb22e5-0651-4338-b597-5f7de413cd67?raw=true)  
-    ![Diversity 2](https://github.com/user-attachments/assets/7b1d196a-c8c8-4632-bd9d-2dc7f3933f0d?raw=true)
+    ![Alpha-Rarefaction 1](images/Alphararefaction.plot1)
+    ![Alpha-Rarefaction 2](images/Alphararefaction.plot2)
+  </details>
+
+  <details>
+    <summary>Diversity Analysis</summary>
+
+    ![Diversity 1](images/PCA.shannonvbraycurtis.svg) 
+    ![Diversity 2](images/PCA.jaccardvfeatures.svg)
 
   </details>
 
   <details>
-    <summary><strong>Taxonomic Bar Plot</strong></summary>
+    <summary>Taxonomic Bar Plot</summary>
 
-    ![Taxonomic Bar Plot](https://github.com/user-attachments/assets/c0b5c6f4-b7f1-433d-b29f-8163fb37e87b?raw=true)
+    ![Taxonomic Bar Plot](images/TaxonomicBarPlot.Bars.svg)
+    ![Taxonomic Bar Plot Key](images/TaxonomicBarPlot.Key.svg)
+  </details>
+
+  <details>
+    <summary>Phylogenetic Tree</summary>
+
+    ![Tree 1](images/PhylogeneticTreewithKey.png)
 
   </details>
 
   <details>
-    <summary><strong>Phylogenetic Tree</strong></summary>
+    <summary>Differential Abundance</summary>
 
-    ![Tree 1](https://github.com/user-attachments/assets/b05f44a5-c592-4aa0-9653-801c7dcff125?raw=true)  
-    ![Tree 2](https://github.com/user-attachments/assets/6b60f9c2-d50f-4b95-9fd8-a1ae01588398?raw=true)
-
-  </details>
-
-  <details>
-    <summary><strong>Differential Abundance</strong></summary>
-
-    ![Differential Abundance](https://github.com/user-attachments/assets/9b9a8fbe-c30c-45d1-a07d-c4ba6dc24a0e?raw=true)
+    ![Differential Abundance](images/DiffAbundance.ANCOMBC.png)
 
   </details>
 
