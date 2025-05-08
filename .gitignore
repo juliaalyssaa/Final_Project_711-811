@@ -1,0 +1,11 @@
+qiime2.microbiomedata/upstream.analysis/phylogenetic.tree/iTOL.files/
+final2.sh
+nohup.out
+qiime2.microbiomedata/demux.qza
+qiime2.microbiomedata/tools/
+qiime2.microbiomedata/upstream.analysis/denoised-seqs.qza
+qiime2.microbiomedata/upstream.analysis/denoised-table.qza
+qiime2.microbiomedata/upstream.analysis/denoising-stats.qza
+silva-138-99-seqs.qza
+silva-138-99-tax.qza
+silva-refseqs-515-806.qza
