@@ -140,44 +140,46 @@ _all code used for the pipeline can be found under "final.sh" and data results c
 
   <details>
     <summary>Denoising Plot</summary>
-
-    ![Denoising Plot](https://raw.githubusercontent.com/kaylaroyce/Final_Project_711-811/main/images/DenoiseResults.png)
+    
+![Denoising Plot](images/DenoiseResults.png)
 
   </details>
 
   <details>
     <summary>Alpha-Rarefaction Plot</summary>
+    
+![Alpha-Rarefaction 1](images/Alphararefaction.plot1.png)
+![Alpha-Rarefaction 2](images/Alphararefaction.plot2.png)
 
-    ![Alpha-Rarefaction 1](/images/Alphararefaction.plot1.png)
-    ![Alpha-Rarefaction 2](/images/Alphararefaction.plot2.png)
   </details>
 
   <details>
     <summary>Diversity Analysis</summary>
-
-    ![Diversity 1](/images/PCA.shannonvbraycurtis.svg) 
-    ![Diversity 2](/images/PCA.jaccardvfeatures.svg)
+    
+![Diversity 1](images/PCA.shannonvbraycurtis.svg) 
+![Diversity 2](images/PCA.jaccardvfeatures.svg)
 
   </details>
 
   <details>
     <summary>Taxonomic Bar Plot</summary>
+    
+![Taxonomic Bar Plot](images/TaxonomicBarPlot.Bars.svg)
+![Taxonomic Bar Plot Key](images/TaxonomicBarPlot.Key.svg)
 
-    ![Taxonomic Bar Plot](/images/TaxonomicBarPlot.Bars.svg)
-    ![Taxonomic Bar Plot Key](/images/TaxonomicBarPlot.Key.svg)
   </details>
 
   <details>
     <summary>Phylogenetic Tree</summary>
-
-    ![Tree 1](/images/PhylogeneticTreewithKey.png)
+    
+![Tree 1](images/PhylogeneticTreewithKey.png)
 
   </details>
 
   <details>
     <summary>Differential Abundance</summary>
 
-    ![Differential Abundance](/images/DiffAbundance.ANCOMBC.png)
+![Differential Abundance](images/DiffAbundance.ANCOMBC.png)
 
   </details>
 
