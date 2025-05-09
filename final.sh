@@ -5,9 +5,9 @@ source activate qiime2-amplicon-2024.5
 
 home="$1" # first argument in command line should be home directory (example : /home/users/kgr1020)
 homedir="$home/GEN711FinalProject"
-maindir="/home/users/kgr1020/GEN711FinalProject/Final_Project_711-811"
+maindir="$home/GEN711FinalProject/Final_Project_711-811"
 rddir="$maindir/rawdata" # used to store metadata.tsv and manifest.tsv
-demux="/home/users/kgr1020/GEN711FinalProject/demux.files" # files too large to store on github
+demux="$homedir/demux.files" # files too large to store on github
 datadir="$maindir/qiime2.microbiomedata"
 mkdir -p $datadir $demux
 cd $datadir
