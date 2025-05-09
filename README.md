@@ -9,23 +9,21 @@ The goal of this project is to analyze 16S rRNA sequencing data from microbiome 
 
 <details>
   <summary><strong>Project Overview</strong></summary>
+This bioinformatic pipeline utilizes data from two sampling locations, each consisting of two treatments, being duckweed surface microbiome and pond water microbiome. Five replicates were performed per treatment/location. The data consisted of 40 FASTQ files with 20 paired-end read samples, each being 250 base pairs long. The 16srRNA sequence were amplified via Illumina HiSeq 2500 format.
 
-  Data for bioinformatic pathway analysis through qiime2:
-  - **40 FASTQ files** (20 paired-end samples)
-  - **16s rRNA data**
-  - **Illumina HiSeq 2500**
-  - **Paired-end, 250 bp reads**
+
+The pipeline was created following the QIIME2 "Gut-to-Soil Axis Tutorial", with the goal of classifiying and analyzing microbial taxonomy between sample types and the differences in microbial abundance. 
+
+The final presentation can be found following this link: 
+
+
+_all code used for the pipeline can be found under "final.sh" and data results can be found in their respective folders in the repo_
+
 
 </details>
 
 <details>
   <summary><strong>Methods</strong></summary>
-
-  - **2 Sampling Locations**
-  - **2 Treatments:**
-    - Duckweed surface microbiome
-    - Pond water microbiome
-  - **5 Replicates per treatment/location**
 
   <details>
     <summary>Importing Data</summary>
