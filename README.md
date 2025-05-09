@@ -141,7 +141,7 @@ _all code used for the pipeline can be found under "final.sh" and data results c
   <details>
     <summary>Denoising Plot</summary>
 
-    ![Denoising Plot](/images/DenoiseResults.png)
+    ![Denoising Plot](https://raw.githubusercontent.com/kaylaroyce/Final_Project_711-811/main/images/DenoiseResults.png)
 
   </details>
 
