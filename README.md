@@ -148,8 +148,8 @@ _all code used for the pipeline can be found under "final.sh" and data results c
   <details>
     <summary>Alpha-Rarefaction Plot</summary>
 
-    ![Alpha-Rarefaction 1](images/Alphararefaction.plot1)
-    ![Alpha-Rarefaction 2](images/Alphararefaction.plot2)
+    ![Alpha-Rarefaction 1](images/Alphararefaction.plot1.png)
+    ![Alpha-Rarefaction 2](images/Alphararefaction.plot2.png)
   </details>
 
   <details>
