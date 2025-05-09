@@ -1,4 +1,3 @@
-# Overview
 # Microbiome Analysis Pipeline 
 
 <details>
@@ -131,7 +130,7 @@ qiime feature-table tabulate-seqs \
 <details>
  <summary><b> Step 2B: Filter Features From Data</b></summary>
 
-  This section focuses on filtering the features (ASVs) within the dataset. First, it filters the ASV feature table, retaining only those ASVs that are present in at least 25% of the samples, which is set to a minimum of 5 samples using the qiime feature-table filter-features command. This step aims to remove rare or potentially spurious ASVs that are not consistently observed across the samples. Next, it filters the representative ASV sequences using qiime feature-table filter-seqs to ensure that only the sequences corresponding to the ASVs retained in the filtered feature table are kept. This maintains consistency between the sequence data and the feature table used for downstream analysis. Finally, the filtered feature table is summarized using qiime feature-table summarize-plus. This generates visualizations and statistics of the filtered data, including sample and feature frequencies, providing an overview of the dataset after the feature filtering step and allowing for quality checks. The metadata file is included in this summarization to provide context to the sample information.
+  This section focuses on filtering the features (ASVs) within the dataset. First, it filters the ASV feature table, retaining only those ASVs that are present in at least 25% of the samples, which is set to a minimum of 5 samples using the qiime feature-table filter-features command. This step aims to remove rare or potentially spurious ASVs that are not consistently observed across the samples. Next, it filters the representative ASV sequences using (`qiime feature-table filter-seqs to ensure that only the sequences corresponding to the ASVs retained in the filtered feature table are kept. This maintains consistency between the sequence data and the feature table used for downstream analysis. Finally, the filtered feature table is summarized using qiime feature-table summarize-plus. This generates visualizations and statistics of the filtered data, including sample and feature frequencies, providing an overview of the dataset after the feature filtering step and allowing for quality checks. The metadata file is included in this summarization to provide context to the sample information.
 
  ```bash
 # === Step 2B: Filter features from data  ===
