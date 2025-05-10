@@ -142,22 +142,25 @@ _all code used for the pipeline can be found under "final.sh" and data results c
     <summary>Denoising Plot</summary>
     
 ![Denoising Plot](images/DenoiseResults.png)
-
+Figure 1.Graph demonstrating the quality scores of sequence bases of forward and reverse reads. The output is used to determine where to trim data during denoising steps of the pipeline. 
   </details>
 
   <details>
     <summary>Alpha-Rarefaction Plot</summary>
     
 ![Alpha-Rarefaction 1](images/Alphararefaction.plot1.png)
+Figure 2.Graph that demonstrates if denoised data maintains an adequate amount of features by comparing shannon index to sequencing depths. The output suggests that duckweed samples have a higher shannon index and greater microbial diversity. Plateaus of both samples demonstrate that most diversity was captured during denoising steps. 
 ![Alpha-Rarefaction 2](images/Alphararefaction.plot2.png)
-
+Figure 3. Graph that demonstrates if denoised data maintains an adequate amount of features by comparing number of samples to sequencing depth. The output suggests that the duckweed samples manitain a higher retention across all sequencing depths, compared to water samples. As depth increases, fewer samples meet the depth threshold of both sample types. 
   </details>
 
   <details>
     <summary>Diversity Analysis</summary>
     
 ![Diversity 1](images/PCA.shannonvbraycurtis.svg) 
+Figure 4. PCA that compares the alpha diversity test of shannon entropy to the beta diversity test of braycurtis (accounts for 81% of variance). The output suggests that the water samples are less diverse per sample, but are compositionally distinct, while duckweed samples are more diverse within each sample and forms distinct cluster groups. The duckweed samples have rich and consistent microbial communities. 
 ![Diversity 2](images/PCA.jaccardvfeatures.svg)
+Figure 5. PCA that compares the alpha diversity test of observed features, which tests for richness, and the beta diversity test jaccard (accounts for 55% of variance), which tests for presence/absence of microbes. The output suggests that water samples are richer in taxa count, due to having more observed features, and demonstrates intra-group variation, likely attributed to differences in sampling locations. The duckweed samples are more variable in richness due to some samples having fewer taxa.
 
   </details>
 
@@ -166,6 +169,7 @@ _all code used for the pipeline can be found under "final.sh" and data results c
     
 ![Taxonomic Bar Plot](images/TaxonomicBarPlot.Bars.svg)
 ![Taxonomic Bar Plot Key](images/TaxonomicBarPlot.Key.svg)
+Figure 6. Taxonomic Bar Plot that demonstrates the species of microbes present, along with the frequencies, in duckweed samples (left) and water samples (right). 
 
   </details>
 
@@ -173,6 +177,7 @@ _all code used for the pipeline can be found under "final.sh" and data results c
     <summary>Phylogenetic Tree</summary>
     
 ![Tree 1](images/PhylogeneticTreewithKey.png)
+Figure 7. Phylogenetic tree that demonstrates the genus groups and species of microbial communities present across all samples. The tree infers genetic relationships between each species. 
 
   </details>
 
@@ -180,6 +185,7 @@ _all code used for the pipeline can be found under "final.sh" and data results c
     <summary>Differential Abundance</summary>
 
 ![Differential Abundance](images/DiffAbundance.ANCOMBC.png)
+Figure 8. Bar plot that utilizes ANCOM-BC testing to demonstrate that log fold change between species groups in water samples and duckweed samples. The output suggests that the water samples are enriched with s.Raphidocelis, cyanobacteria, phacus trimarginatus, and flavobacteria, while the water samples are depleted in unassigned microbe taxa, peptrostreptococcales tissierellales, and mitochondria, in comparison to duckweed samples. 
 
   </details>
 
