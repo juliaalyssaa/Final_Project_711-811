@@ -14,7 +14,8 @@ This bioinformatic pipeline utilizes data from two sampling locations, each cons
 
 The pipeline was created following the QIIME2 "Gut-to-Soil Axis Tutorial", with the goal of classifiying and analyzing microbial taxonomy between sample types and the differences in microbial abundance. 
 
-The final presentation can be found following this link: 
+The final presentation can be found here: 
+[Presentation](images/GEN711.Qiime2Presentation.pdf)
 
 
 _all code used for the pipeline can be found under "final.sh" and data results can be found in their respective folders in the repo_
