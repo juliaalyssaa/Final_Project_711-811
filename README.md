@@ -192,3 +192,14 @@ Figure 8. Bar plot that utilizes ANCOM-BC testing to demonstrate that log fold c
 
 </details>
 
+<details>
+  <summary><strong>References</strong></summary>
+  
+- [Qiime2 Tutorial](https://amplicon-docs.qiime2.org/en/latest/tutorials/gut-to-soil.html): Main tutorial used to create bioinformatic pipeline  
+- [Parkinson's Mouse Tutorial](https://docs.qiime2.org/2024.10/tutorials/pd-mice/): Supplementary tutorial used to clarify steps and offer other ways to complete analyses in bioinformatic pipeline  
+- [BLAST](https://blast.ncbi.nlm.nih.gov/Blast.cgi): Used to confirm taxonomy of features and determine amplified region  
+- [iTOL Tutorial](https://itol.embl.de/help.cgi): Used as reference during construction of phylogenetic tree  
+- [Qiime2 Classifiers](https://library.qiime2.org/data-resources): Used to determine which classifier to use during taxonomic classification  
+- [ChatGPT](https://chatgpt.com/): Used for answering general questions about bioinformatic pipeline
+  
+</details>
